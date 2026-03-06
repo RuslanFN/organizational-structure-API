@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select, exists, and_
+from sqlalchemy import select, exists, and_, update
 from sqlalchemy.exc import NoResultFound
 from models import Department, Employee
 class DepartmentService:
@@ -9,11 +9,13 @@ class DepartmentService:
     def get_departments(self, id: int) -> Department|None:
         return self.session.get(Department, id)
     
-    def create_department(self, name: str, id: int|None) -> Department:
+    def create_department(self, name: str, id: int|None = None) -> Department:
         try:
             if id:
                 stmt = select(Department).where(Department.id == id)
                 department = self.session.execute(stmt).scalar_one()
+                if not self.is_name_unique(parant_id=id, name=name):
+                    raise ValueError('Имя депортамента должно быть уникальным среди потомков')
                 new_department = Department(name=name, parent=department)
             else:
                 new_department = Department(name=name)
@@ -52,4 +54,26 @@ class DepartmentService:
         else:
             raise ValueError('Нельзя сделать департамент родителем департамента, который входит в него')
 
+    def delete_department(self, id: int, mode: str, reassign_to_department_id: int|None = None):
+        if mode == 'reassign' and not reassign_to_department_id:
+            raise ValueError('Не указан id депортамента для перевода сотрудников')
+        if mode not in ['reassign', 'cascade']:
+            raise ValueError('Неправильная опция mode. Доступны только reassign и cascade')
+        department = self.get_departments(id)
+        if department is None:
+            raise ValueError('Депортамента с таким id не существует')
+        if mode == 'reassign':
+            stmt = (update(Department)
+                        .where(Department.parent_id == department.id)
+                        .values(parent_id = department.parent_id))
+            self.session.execute(stmt)
+            stmt = (update(Employee)
+                        .where(Employee.department_id == department.id)
+                        .values(department_id = reassign_to_department_id))
+            self.session.execute(stmt)
+        self.session.delete(department)
+        self.session.commit()
     
+    def get_department_dept(self, depth: int=1, include_employee: bool=True): 
+
+        

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class Employee(Base):
     __tablename__ = 'employee'
-    department_id: Mapped[int] = mapped_column(ForeignKey('department.id'))
+    department_id: Mapped[int] = mapped_column(ForeignKey('department.id', ondelete='CASCADE'))
     full_name: Mapped[str]
     position: Mapped[str]
     hired_at: Mapped[datetime|None] = mapped_column(DateTime)
