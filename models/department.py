@@ -9,6 +9,6 @@ class Department(Base):
     __tablename__ = 'department'
     name: Mapped[str]
     parent_id: Mapped[int|None] = mapped_column(ForeignKey('department.id', ondelete='CASCADE'))
-    parent: Mapped[Optional['Department']] = relationship(back_populates='children')
+    parent: Mapped[Optional['Department']] = relationship(back_populates='children', remote_side="Department.id")
     children: Mapped[List['Department']] = relationship(back_populates='parent')
-    epployee: Mapped[List['Employee']] = relationship(back_populates='department')
+    employees: Mapped[List['Employee']] = relationship(back_populates='department')

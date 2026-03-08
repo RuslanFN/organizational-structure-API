@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from os import getenv
-from typing import Iteratorte
+from typing import Iterator
 load_dotenv()
 
 db_driver = 'postgresql+psycopg2'
@@ -16,6 +16,6 @@ conn = f'{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 engine = create_engine(conn, echo=True)
 session_maker = sessionmaker(bind=engine)
 
-def get_session() -> Iteratorte[Session]:
+def get_session() -> Iterator[Session]:
     with session_maker() as session:
         yield session
