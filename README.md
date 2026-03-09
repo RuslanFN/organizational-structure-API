@@ -29,10 +29,11 @@ docker-compose exec app pytest tests/tests.py
 ```
 
 Основные эндпоинты
-POST /departments/ — создание подразделения
-GET /departments/{id} — получение дерева подразделения с сотрудниками
-PATCH /departments/{id} — редактирование и перемещение подразделения
-DELETE /departments/{id} — удаление (cascade или reassign)
-POST /departments/{id}/employees/ — создание сотрудника (если реализовано)
+- POST /departments/ — создание подразделения
+- GET /departments/{id} — получение дерева подразделения с сотрудниками
+- PATCH /departments/{id} — редактирование и перемещение подразделения
+- DELETE /departments/{id} — удаление (cascade или reassign)
+- POST /departments/{id}/employees/ — создание сотрудника (если реализовано)
+
 Переменные окружения
 Параметры подключения к базе данных жестко заданы в файле docker-compose.yml для упрощения первого запуска.
